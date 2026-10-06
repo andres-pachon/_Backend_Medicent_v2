@@ -7,8 +7,8 @@ class AuthController:
     @staticmethod
     def login():
         data = request.get_json()
-        email = data.get("email")
-        password = data.get("password")
+        email = (data.get("correo") or data.get("email") or "").strip()
+        password = data.get("password") or data.get("contrasena") or ""
 
         usuario = AuthService.login(email, password)
 
