@@ -1,4 +1,5 @@
 from app.models.usuario import Usuario
+from app.models.administrador import Administrador
 from app.database.database import db, bcrypt
 
 class AuthService:
@@ -14,6 +15,12 @@ class AuthService:
             return None
         
         return usuario
+
+    @staticmethod
+    def es_admin(usuario):
+        """Verifica si el usuario tiene rol de administrador"""
+        admin = Administrador.query.filter_by(idUsuario=usuario.idUsuario).first()
+        return admin is not None
 
     @staticmethod
     def register(nombre, apellido, documento, correo, telefono, fechaNacimiento, password, idTipoDocumento):
