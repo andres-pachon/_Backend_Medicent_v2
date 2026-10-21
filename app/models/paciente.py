@@ -19,10 +19,17 @@ class Paciente(db.Model):
     peso = db.Column(db.Float, nullable=False)
     tipoSangre = db.Column(db.Enum(TipoSangreEnum), nullable=False)
     dieta = db.Column(db.String(150), nullable=True)
+    contactoEmergencia = db.Column(db.String(150), nullable=True)
+    eps = db.Column(db.String(150), nullable=True)
+    alergias = db.Column(db.Text, nullable=True)
+    diagnostico = db.Column(db.Text, nullable=True)
     
     idUsuario = db.Column(db.Integer, db.ForeignKey('usuario.idUsuario'), nullable=False)
+    codigoVinculacion = db.Column(db.String(24), unique=True, nullable=True)
+    codigoVinculacionExpira = db.Column(db.DateTime, nullable=True)
 
     # Relaciones del paciente
+    cuidadores = db.relationship('Cuidador', back_populates='paciente', lazy=True)
     tratamientos = db.relationship('Tratamiento', backref='paciente', cascade='all, delete-orphan', lazy=True)
     adherencias = db.relationship('Adherencia', backref='paciente', cascade='all, delete-orphan', lazy=True)
     alertas = db.relationship('Alerta', backref='paciente', cascade='all, delete-orphan', lazy=True)

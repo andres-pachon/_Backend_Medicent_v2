@@ -5,17 +5,17 @@ from app.models.inventario_model import InventarioPersonal
 class InventarioService:
 
     @staticmethod
-    def obtener_inventario_paciente(id_paciente):
-        items = InventarioPersonal.query.filter_by(id_paciente=id_paciente).all()
+    def obtener_inventario_usuario(id_usuario):
+        items = InventarioPersonal.query.filter_by(id_usuario=id_usuario).all()
         return [item.to_dict() for item in items], 200
 
     @staticmethod
-    def recargar_stock(id_paciente, id_medicamento, cantidad_a_sumar, fecha_vencimiento=None):
+    def recargar_stock(id_usuario, id_medicamento, cantidad_a_sumar, fecha_vencimiento=None):
         if cantidad_a_sumar <= 0:
             return {"error": "La cantidad a recargar debe ser mayor a cero"}, 400
 
         item = InventarioPersonal.query.filter_by(
-            id_paciente=id_paciente,
+            id_usuario=id_usuario,
             id_medicamento=id_medicamento
         ).first()
 
@@ -26,7 +26,7 @@ class InventarioService:
         else:
             vencimiento = datetime.strptime(fecha_vencimiento, '%Y-%m-%d').date() if fecha_vencimiento else None
             item = InventarioPersonal(
-                id_paciente=id_paciente,
+                id_usuario=id_usuario,
                 id_medicamento=id_medicamento,
                 cantidad_actual=cantidad_a_sumar,
                 fecha_vencimiento_lote=vencimiento
@@ -40,12 +40,12 @@ class InventarioService:
         }, 200
 
     @staticmethod
-    def descontar_stock(id_paciente, id_medicamento, cantidad=1):
+    def descontar_stock(id_usuario, id_medicamento, cantidad=1):
         """
         Método interno reutilizable: descuenta unidades cuando se registra una toma.
         """
         item = InventarioPersonal.query.filter_by(
-            id_paciente=id_paciente,
+            id_usuario=id_usuario,
             id_medicamento=id_medicamento
         ).first()
 

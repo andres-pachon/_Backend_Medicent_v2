@@ -12,6 +12,7 @@ class Usuario(db.Model):
     fechaNacimiento = db.Column(db.Date, nullable=False)
 
     password = db.Column(db.String(255), nullable=False)
+    activo = db.Column(db.Boolean, nullable=False, default=True, server_default=db.text("1"))
     
     
     idTipoDocumento = db.Column(db.Integer, db.ForeignKey('tipo_documento.idTipoDocumento'), nullable=False)

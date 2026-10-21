@@ -5,7 +5,8 @@ class InventarioPersonal(db.Model):
     __tablename__ = 'inventarios_personales'
 
     id_inventario = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_paciente = db.Column(db.Integer, db.ForeignKey('usuario.idUsuario'), nullable=False)
+    # La columna heredada se llama id_paciente, pero siempre almacena idUsuario.
+    id_usuario = db.Column('id_paciente', db.Integer, db.ForeignKey('usuario.idUsuario'), nullable=False)
     id_medicamento = db.Column(db.Integer, db.ForeignKey('medicamento.idMedicamento'), nullable=False)
     cantidad_actual = db.Column(db.Integer, nullable=False, default=0)
     fecha_vencimiento_lote = db.Column(db.Date, nullable=True)
@@ -14,7 +15,11 @@ class InventarioPersonal(db.Model):
     def to_dict(self):
         return {
             'id_inventario': self.id_inventario,
-            'id_paciente': self.id_paciente,
+            'idInventario': self.id_inventario,
+            'idUsuario': self.id_usuario,
+            'idMedicamento': self.id_medicamento,
+            # Se conserva temporalmente la clave antigua por compatibilidad con clientes existentes.
+            'id_paciente': self.id_usuario,
             'id_medicamento': self.id_medicamento,
             'cantidad_actual': self.cantidad_actual,
             'fecha_vencimiento_lote': self.fecha_vencimiento_lote.strftime('%Y-%m-%d') if self.fecha_vencimiento_lote else None,

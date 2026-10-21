@@ -19,7 +19,8 @@ class AuthController:
             identity=str(usuario.idUsuario),
             additional_claims={
                 "nombre": usuario.nombre,
-                "apellido": usuario.apellido
+                "apellido": usuario.apellido,
+                "rol": "admin" if usuario.administrador else "usuario"
             }
         )
 
@@ -27,15 +28,23 @@ class AuthController:
             "accessToken": token,
             "user": {
                 "id": usuario.idUsuario,
+                "idUsuario": usuario.idUsuario,
                 "nombre": usuario.nombre,
                 "apellido": usuario.apellido,
-                "correo": usuario.correo
+                "rol": "admin" if usuario.administrador else "usuario",
+                "correo": usuario.correo,
+                "documento": usuario.documento,
+                "telefono": usuario.telefono,
+                "fechaNacimiento": str(usuario.fechaNacimiento),
+                "perfil": "paciente" if usuario.paciente is not None else ("cuidador" if usuario.cuidador is not None else None),
+                "pacienteVinculado": bool(usuario.cuidador and usuario.cuidador.idPaciente),
+                "activo": bool(usuario.activo)
             }
         }), 200
 
     @staticmethod
     def register():
-        data = request.get_json()
+        data = request.get_json(silent=True) or {}
 
         nuevo_usuario, error_msg = AuthService.register(
             nombre=data.get("nombre"),
@@ -55,8 +64,10 @@ class AuthController:
             "message": "Usuario registrado exitosamente",
             "user": {
                 "id": nuevo_usuario.idUsuario,
+                "idUsuario": nuevo_usuario.idUsuario,
                 "nombre": nuevo_usuario.nombre,
                 "apellido": nuevo_usuario.apellido,
-                "correo": nuevo_usuario.correo
+                "correo": nuevo_usuario.correo,
+                "rol": "usuario"
             }
         }), 201

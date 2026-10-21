@@ -6,10 +6,10 @@ class Adherencia(db.Model):
 
     idAdherencia = db.Column(db.Integer, primary_key=True, autoincrement=True)
     idPaciente = db.Column(db.Integer, db.ForeignKey('paciente.idPaciente'), nullable=False)
-    idTratamiento = db.Column(db.Integer, db.ForeignKey('tratamiento.idTratamiento'), nullable=False)
+    idTratamiento = db.Column(db.Integer, db.ForeignKey('tratamiento.idTratamiento'), nullable=True)
     fechaGeneracion = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    periodoInicio = db.Column(db.Date, nullable=False)
-    periodoFin = db.Column(db.Date, nullable=False)
+    periodoInicio = db.Column(db.Date, nullable=True)
+    periodoFin = db.Column(db.Date, nullable=True)
     totalProgramadas = db.Column(db.Integer, nullable=False, default=0)
     totalRealizadas = db.Column(db.Integer, nullable=False, default=0)
     porcentaje = db.Column(db.Float, nullable=False)
@@ -21,7 +21,9 @@ class Adherencia(db.Model):
             'idAdherencia': self.idAdherencia,
             'idPaciente': self.idPaciente,
             'idTratamiento': self.idTratamiento,
-            'fechaGeneracion': self.fechaGeneracion.strftime('%Y-%m-%d %H:%M:%S') if self.fechaGeneracion else None,
+            # AdherenciaService stores this timestamp in UTC; include the timezone
+            # so clients can render it in the patient's local time.
+            'fechaGeneracion': self.fechaGeneracion.strftime('%Y-%m-%dT%H:%M:%SZ') if self.fechaGeneracion else None,
             'periodoInicio': self.periodoInicio.strftime('%Y-%m-%d') if self.periodoInicio else None,
             'periodoFin': self.periodoFin.strftime('%Y-%m-%d') if self.periodoFin else None,
             'totalProgramadas': self.totalProgramadas,
